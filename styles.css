@@ -1,8 +1,41 @@
-/*
+/* AI Notes Tagger Plugin Styles */
 
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
+.ai-tagger-validation-box.has-errors {
+	margin-top: 10px;
+	margin-bottom: 16px;
+	padding: 10px 14px;
+	background-color: var(--background-modifier-error);
+	border: 1px solid var(--text-error);
+	border-radius: 6px;
+}
 
-If your plugin does not need CSS, delete this file.
+.ai-tagger-validation-header {
+	display: block;
+	margin-bottom: 6px;
+	color: var(--text-error);
+	font-weight: 600;
+}
 
-*/
+.ai-tagger-validation-list {
+	margin: 0;
+	padding-left: 20px;
+	color: var(--text-error);
+}
+
+.ai-tagger-error-text {
+	color: var(--text-error);
+	font-weight: 500;
+	margin-top: 6px;
+}
+
+.ai-tagger-success-text {
+	color: var(--text-success);
+	font-weight: 500;
+	margin-top: 6px;
+}
+
+.ai-tagger-test-result {
+	margin-top: 8px;
+	margin-bottom: 8px;
+	font-size: 0.9em;
+}

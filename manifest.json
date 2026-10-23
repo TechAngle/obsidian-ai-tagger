@@ -1,11 +1,11 @@
 {
-	"id": "sample-plugin",
-	"name": "Sample Plugin",
+	"id": "ai-tagger",
+	"name": "AI Notes Tagger",
 	"version": "1.0.0",
-	"minAppVersion": "1.0.0",
-	"description": "Demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
-	"isDesktopOnly": false
+	"minAppVersion": "1.13.0",
+	"description": "Tag notes automatically using local or remote LLMs (Ollama / OpenAI-compatible API) with token minimization and structured JSON output.",
+	"author": "TechAngle",
+	"authorUrl": "https://github.com/TechAngle",
+	"fundingUrl": "https://github.com/TechnAngle",
+	"isDesktopOnly": true
 }

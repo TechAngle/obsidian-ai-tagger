@@ -1,92 +1,57 @@
-# Obsidian Sample Plugin
+# AI Notes Tagger for Obsidian
 
-This is a sample plugin for Obsidian (https://obsidian.md).
+An Obsidian plugin that automatically tags notes with inline hashtags at the beginning of the file using local or remote LLMs (Ollama, LM Studio, vLLM, OpenAI, or any OpenAI-compatible server).
 
-This project uses TypeScript to provide type checking and documentation.
-The repo depends on the latest plugin API (obsidian.d.ts) in TypeScript Definition format, which contains TSDoc comments describing what it does.
+## Features
 
-This sample plugin demonstrates some of the basic functionality the plugin API can do.
+- **Inline Hashtags at Beginning of Note**: Inserts or appends tags as `#hashtag` format on the first line of the note (or immediately after YAML frontmatter if present).
+- **Token Minimization & Preprocessing**: Optimizes prompt tokens by stripping existing frontmatter, existing hashtag headers, code blocks, images, HTML comments, URLs, and formatting noise before sending text to the LLM.
+- **Empty Note Detection**: Automatically skips notes without analyzable text and notifies you with `"No text for analysis"`.
+- **Structured JSON Schema**: Enforces strict JSON schema responses (`{ "tags": string[] }`) to guarantee reliable parsing.
+- **Deduplicated Appending**: If a hashtag line already exists at the top of the file, newly generated hashtags are merged and appended without duplicates.
+- **Rich Context**: Includes note creation date, last modification date, file name, and minimized content in the analysis context.
+- **OpenAI-Compatible & Local First**: Out-of-the-box support for local Ollama (`http://localhost:11434/v1`) or any OpenAI-compatible API endpoint.
+- **Native Obsidian Networking**: Built strictly using Obsidian's `requestUrl` API (no `fetch`), ensuring security and cross-platform compatibility.
 
-- Adds a ribbon icon, which shows a Notice when clicked.
-- Adds a command "Open modal (simple)" which opens a Modal.
-- Adds a plugin setting tab to the settings page.
-- Registers a global click event and outputs a Notice on click.
-- Registers a global interval which logs 'setInterval' to the console.
+## Installation
 
-## First time developing plugins?
+1. Copy `main.js`, `manifest.json`, and `styles.css` into your Obsidian vault under:
+   ```
+   <Vault>/.obsidian/plugins/ai-tagger/
+   ```
+2. In Obsidian, navigate to **Settings → Community plugins**.
+3. Reload community plugins and enable **AI Notes Tagger**.
 
-Quick starting guide for new plugin devs:
+## Configuration
 
-- Check if [someone already developed a plugin for what you want](https://obsidian.md/plugins)! There might be an existing plugin similar enough that you can partner up with.
-- Make a copy of this repo as a template with the "Use this template" button (login to GitHub if you don't see it).
-- Clone your repo to a local development folder. For convenience, you can place this folder in your `.obsidian/plugins/your-plugin-name` folder.
-- Install NodeJS, then run `npm i` in the command line under your repo folder.
-- Run `npm run dev` to compile your plugin from `src/main.ts` to `main.js`.
-- Make changes to `src/main.ts` (or create new `.ts` files). Those changes should be automatically compiled into `main.js`.
-- Reload Obsidian to load the new version of your plugin.
-- Enable plugin in settings window.
-- For updates to the Obsidian API run `npm update` in the command line under your repo folder.
+In **Settings → AI Notes Tagger**, configure:
 
-## Releasing new releases
+- **Host of server**: The base URL of your API endpoint (e.g. `http://localhost:11434/v1` or `https://api.openai.com/v1`).
+- **Auth key**: Optional API key or bearer token (leave blank for local Ollama).
+- **Model name**: Model identifier (e.g. `llama3.2`, `mistral`, `gpt-4o-mini`).
+- **Minimum amount of tags**: Lower bound for generated tags (must be $\ge 1$ and $\le \text{maximum}$).
+- **Maximum amount of tags**: Upper bound for generated tags (must be $\ge 1$ and $\ge \text{minimum}$).
+- **Connection test**: Click **Test connection** to verify connectivity, authentication, and model availability.
 
-- Update your `manifest.json` with your new version number, such as `1.0.1`, and the minimum Obsidian version required for your latest release.
-- Update your `versions.json` file with `"new-plugin-version": "minimum-obsidian-version"` so older versions of Obsidian can download an older version of your plugin that's compatible.
-- Create new GitHub release using your new version number as the "Tag version". Use the exact version number, don't include a prefix `v`. See here for an example: https://github.com/obsidianmd/obsidian-sample-plugin/releases
-- Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments. Note: The manifest.json file must be in two places, first the root path of your repository and also in the release.
-- Publish the release.
+> **Validation**: Negative numbers and cases where minimum exceeds maximum are blocked with immediate visual feedback in the settings tab.
 
-> You can simplify the version bump process by running `npm version patch`, `npm version minor` or `npm version major` after updating `minAppVersion` manually in `manifest.json`.
-> The command will bump version in `manifest.json` and `package.json`, and add the entry for the new version to `versions.json`
+## Usage
 
-## Adding your plugin to the community plugin list
+You can trigger note tagging in three ways:
 
-- Check the [plugin guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines).
-- Publish an initial version.
-- Make sure you have a `README.md` file in the root of your repo.
-- Make a pull request at https://github.com/obsidianmd/obsidian-releases to add your plugin.
+1. **Command Palette**: Press `Ctrl+P` (or `Cmd+P`), search for **AI Notes Tagger: Tag current note with AI**, and press Enter.
+2. **Ribbon Icon**: Click the tag icon in the left ribbon to tag the currently active note.
+3. **File Explorer Context Menu**: Right-click any Markdown note in the file explorer and select **Tag with AI**.
 
-## How to use
+## Development
 
-- Clone this repo.
-- Make sure your NodeJS is at least v18 (`node --version`).
-- `npm i` to install dependencies.
-- `npm run dev` to start compilation in watch mode.
+```bash
+# Install dependencies
+npm install
 
-## Manually installing the plugin
+# Run build
+npm run build
 
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/your-plugin-id/`.
-
-## Improve code quality with eslint
-
-- [ESLint](https://eslint.org/) is a tool that analyzes your code to quickly find problems. You can run ESLint against your plugin to find common bugs and ways to improve your code.
-- This project already has eslint preconfigured, you can invoke a check by running`npm run lint`
-- Together with a custom eslint [plugin](https://github.com/obsidianmd/eslint-plugin) for Obsidan specific code guidelines.
-- A GitHub action is preconfigured to automatically lint every commit on all branches.
-
-## Funding URL
-
-You can include funding URLs where people who use your plugin can financially support it.
-
-The simple way is to set the `fundingUrl` field to your link in your `manifest.json` file:
-
-```json
-{
-	"fundingUrl": "https://buymeacoffee.com"
-}
+# Run linter
+npm run lint
 ```
-
-If you have multiple URLs, you can also do:
-
-```json
-{
-	"fundingUrl": {
-		"Buy Me a Coffee": "https://buymeacoffee.com",
-		"GitHub Sponsor": "https://github.com/sponsors",
-		"Patreon": "https://www.patreon.com/"
-	}
-}
-```
-
-## API Documentation
-
-See https://docs.obsidian.md
